@@ -1,0 +1,40 @@
+import pandas as pd
+from datetime import datetime, timedelta
+
+# تعريف المهام
+tasks = [
+    {"name": "Task 1", "duration": 2},  # المدة بالساعات
+    {"name": "Task 2", "duration": 1.5},
+    {"name": "Task 3", "duration": 3},
+]
+
+# إنشاء جدول شهري
+def generate_monthly_schedule(month, year, tasks):
+    # إنشاء DataFrame للأيام في الشهر
+    start_date = datetime(year, month, 1)
+    end_date = (start_date + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+    dates = pd.date_range(start_date, end_date)
+    schedule = pd.DataFrame(dates, columns=["Date"])
+    
+    # إضافة عمود للمهام
+    schedule["Task"] = None
+    
+    task_index = 0
+    for i, date in schedule.iterrows():
+        if task_index < len(tasks):
+            schedule.at[i, "Task"] = tasks[task_index]["name"]
+            task_index += 1
+        else:
+            task_index = 0
+            schedule.at[i, "Task"] = tasks[task_index]["name"]
+            task_index += 1
+
+    return schedule
+
+# توليد الجدول لشهر محدد (مثلاً يوليو 2023)
+month = 7
+year = 2023
+schedule = generate_monthly_schedule(month, year, tasks)
+
+# عرض الجدول
+print(schedule)
